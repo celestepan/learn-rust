@@ -54,6 +54,10 @@ Read the file with byte-oriented file I/O. Handle command arguments, errors,
 and exit statuses exactly as specified. Build a complete report before
 writing stdout and handle write errors.
 
+From the course root, run only your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\rust\logscope
 cargo run -- ..\..\fixtures\sample.log
@@ -63,13 +67,26 @@ cargo clippy --all-targets -- -D warnings
 Pop-Location
 ```
 
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo run -- ../../fixtures/sample.log &&
+  cargo test &&
+  cargo fmt --check &&
+  cargo clippy --all-targets -- -D warnings
+)
+```
+
 ## Gate, tests, and deliverables
 
 Complete the shared case matrix, including a truly zero-byte input in memory.
 This is when the full malformed-record matrix becomes required, not week 3.
 Compare render output bytes against all three expected-output files. Add
 `tests/cli.rs` using `std::process::Command` and Cargo's
-`env!("CARGO_BIN_EXE_logscope")` integration-test binary path.
+`env!("CARGO_BIN_EXE_logscope")` integration-test binary path, which supplies
+the correct executable name on either OS. Use Path::join for fixture paths.
 Assert success stdout/stderr/status, wrong argument count, missing file,
 and a temporary filename containing spaces. Clean up temporary files; choose
 unique paths instead of a fixed global filename. No shell is needed in tests.

@@ -32,16 +32,20 @@ difference between changing a mutable binding and shadowing one.
 
 ## Required Intermediate project
 
-From the course root, create the crate, implement, then run:
+From the course root, create the crate once using your OS's block.
+
+**Windows PowerShell**
 
 ```powershell
 New-Item -ItemType Directory -Force .\rust
 cargo new --vcs none .\rust\week01-hello
-Push-Location .\rust\week01-hello
-cargo run -- Ada
-cargo test
-cargo fmt --check
-Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p rust &&
+cargo new --vcs none ./rust/week01-hello
 ```
 
 Replace the generated hello-world program. Required behavior: with no argument,
@@ -53,9 +57,37 @@ Names can be ordinary Unicode text; this is not the later ASCII log grammar.
 
 Factor greeting construction into a function and test it. Required cases:
 default greeting, `Ada`, `"Ada Lovelace"`, and empty-name rejection.
-Manually verify the wrong-argument-count process exit using `$LASTEXITCODE`
-immediately after a run. Do not use panic for input validation.
-You choose function names and error representation this week.
+Do not use panic for input validation. You choose function names and error
+representation this week.
+
+After implementing, run the checks from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\rust\week01-hello
+cargo run -- Ada
+cargo test
+cargo fmt --check
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/week01-hello &&
+  cargo run -- Ada &&
+  cargo test &&
+  cargo fmt --check
+)
+```
+
+Manually verify the wrong-argument-count exit after building with `cargo build`.
+From inside the crate, run `.\target\debug\week01-hello.exe Ada extra` on
+Windows or `./target/debug/week01-hello Ada extra` on macOS. Immediately inspect
+`$LASTEXITCODE` in PowerShell or `printf 'exit=%s\n' "$?"` in Terminal.
+The expected code is 2. See [exit-status guidance](../SETUP.md#executables-exit-status-and-fixtures).
 
 **Small previews:** collecting CLI arguments introduces String/Vec before
 chapter 5. An argument lookup may introduce Some/None; a plain branch is

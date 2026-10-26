@@ -42,34 +42,87 @@ By the end, you should be able to:
 
 ## Setup
 
-Use a separate checkout of this repository, not a directory inside another
-project. Install current stable tools:
+Start with the detailed instructions for
+**[Windows PowerShell](SETUP.md#windows-powershell)** or
+**[macOS Terminal](SETUP.md#macos-terminal)**. Install or verify the following
+tools before the relevant week; do not install another copy if yours works.
 
-- [Rust installation](https://www.rust-lang.org/tools/install) and the
-  [Rust Book](https://doc.rust-lang.org/book/).
-- [Go installation](https://go.dev/doc/install) and
-  [A Tour of Go](https://go.dev/tour/).
-- Git and a text editor of your choice.
+| Download | Windows | macOS |
+| --- | --- | --- |
+| Git | [Git for Windows](https://git-scm.com/install/windows) | Apple's Command Line Tools, requested with `xcode-select --install` |
+| Rust and Cargo | [Stable rustup installer](https://www.rust-lang.org/tools/install) | [Official rustup instructions](https://doc.rust-lang.org/book/ch01-01-installation.html) |
+| Native linker/SDK | MSVC **Desktop development with C++** workload and Windows SDK | Apple's Command Line Tools; full Xcode is not required |
+| Go, by week 7 | [Stable Windows MSI](https://go.dev/dl/) for your architecture | [Stable macOS PKG](https://go.dev/dl/): arm64 for Apple silicon, amd64 for Intel |
 
-On Windows, Rust's MSVC toolchain requires Visual Studio C++ build tools and a
-Windows SDK. Your existing C++ installation may already provide them.
-Use the [official C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-installer's Desktop development with C++ workload if needed. Follow Microsoft's
-[getting-started chapter](https://microsoft.github.io/RustTraining/c-cpp-book/ch02-getting-started.html)
-for main/Cargo, but skip optional REPL installation, publishing, and external
-crate examples. Use stable Rust, not nightly.
-Reopen your terminal after installing tools, then check:
+An editor is required, but IDEs, Homebrew, GitHub CLI, and editor extensions
+are optional. Rustup includes Cargo; add rustfmt and clippy through rustup.
+The exercises use the standard libraries only. You do not need to download
+completed projects, third-party packages, or Microsoft's training repository.
+See [SETUP.md](SETUP.md) for installation, PATH, architecture, and race-detector
+details. Reopen your terminal after installing tools.
 
-```powershell
+These verification commands work in **both shells**; defer the Go command if
+you are not installing Go until week 7:
+
+```text
+git --version
+rustup show
 rustc --version
 cargo --version
 rustup component add rustfmt clippy
 go version
-git --version
 ```
 
-The course materials are present. Create implementation and submission
-directories as the assignments introduce them:
+### Download the course
+
+Already have this checkout with its handouts and fixtures? Use it; skip cloning.
+Otherwise, choose a separate user-writable directory, not one inside Chromium
+or another repository. These examples use your home directory's Projects folder.
+To submit through your own fork, first fork on GitHub and replace the URL below
+with **your fork's Code > HTTPS URL**. Cloning downloads a local checkout; it
+does not create a fork or grant permission to push to the original repository.
+
+**Windows PowerShell**
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\Projects" -ErrorAction Stop
+Set-Location "$HOME\Projects" -ErrorAction Stop
+git clone https://github.com/celesterowan/learn-rust.git learn-rust
+if ($LASTEXITCODE -ne 0) { throw 'Clone failed; resolve the error before continuing.' }
+Set-Location .\learn-rust -ErrorAction Stop
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p "$HOME/Projects" &&
+cd "$HOME/Projects" &&
+git clone https://github.com/celesterowan/learn-rust.git learn-rust &&
+cd learn-rust
+```
+
+If the destination exists, use the existing checkout or choose another name,
+not a nested clone. You should see README.md, SETUP.md, assignments, and fixtures.
+If the selected branch lacks these materials, obtain the published course
+branch/version rather than creating missing handouts.
+
+**ZIP alternative:** choose **Code > Download ZIP** on GitHub, then fully
+extract it using **Extract All** on Windows or Finder on macOS. Open the
+extracted directory containing README.md. A ZIP has no Git history/remotes;
+cloning is the recommended route for later commits and pushes.
+
+Continue with [week 1](assignments/week-01.md). Handouts and fixtures are
+included; source projects are yours to create, not extra downloads.
+
+### Course directories and shell commands
+
+Run only your OS's command block. Examples start at the **course root**
+(the folder containing this README), unless stated otherwise. Windows uses
+PowerShell; macOS uses Terminal's zsh. Parenthesized macOS blocks leave your
+shell at the course root. Read blocks before running them: create a project
+once, implement the assignment, then run its checks. Stop and resolve failures
+before continuing. [SETUP.md](SETUP.md#shell-conventions-and-directory-plan)
+explains the shell conventions.
 
 ```text
 rust/
@@ -94,11 +147,18 @@ There is no root Cargo workspace or Go module. Do not follow the source's
 workspace or dependency exercises for this course. Keep Cargo.lock for these
 application exercises; go.sum may not exist without external dependencies.
 
-All commands below start at your chosen course checkout root unless stated
-otherwise. Create the submission directory once:
+Create the submission directory once from the course root.
+
+**Windows PowerShell**
 
 ```powershell
 New-Item -ItemType Directory -Force .\docs\submissions
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p docs/submissions
 ```
 
 ## Microsoft chapter-to-week map
@@ -279,16 +339,20 @@ bindings, shadowing, and value-producing blocks.
 expression to classify u32 values 0 and 7 as zero/nonzero. Predict and observe
 a mutability compiler error; correct it and explain shadowing versus mutation.
 
-**Required Intermediate:** create the crate, implement, then run:
+**Required Intermediate:** create the crate once from the course root.
+
+**Windows PowerShell**
 
 ```powershell
 New-Item -ItemType Directory -Force .\rust
 cargo new --vcs none .\rust\week01-hello
-Push-Location .\rust\week01-hello
-cargo run -- Ada
-cargo test
-cargo fmt --check
-Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p rust &&
+cargo new --vcs none ./rust/week01-hello
 ```
 
 No arguments prints `Hello, learner!` plus LF; one nonempty name prints
@@ -296,9 +360,36 @@ No arguments prints `Hello, learner!` plus LF; one nonempty name prints
 An empty name or extra arguments means exit 2, empty stdout, and stderr
 starting `error:`. Success exits 0 with empty stderr. Factor and test greeting
 construction; test default, Ada, Ada Lovelace, and empty-name rejection.
-Manually check extra arguments with `$LASTEXITCODE` immediately after running.
+After `cargo build`, manually check extra arguments using the executable
+inside the crate: `.\target\debug\week01-hello.exe Ada extra` on Windows or
+`./target/debug/week01-hello Ada extra` on macOS. Immediately display
+`$LASTEXITCODE` in PowerShell or `printf 'exit=%s\n' "$?"` in Terminal;
+the expected code is 2.
 No panic for validation. CLI String/Vec and basic tests are small previews;
 no custom Result architecture or lifetime annotations are required.
+
+After implementing, run from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\rust\week01-hello
+cargo run -- Ada
+cargo test
+cargo fmt --check
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/week01-hello &&
+  cargo run -- Ada &&
+  cargo test &&
+  cargo fmt --check
+)
+```
 
 **Gate/deliverable:** submit crate and week-01 reflection with versions,
 test evidence, and one corrected compiler diagnostic. Explain the
@@ -339,13 +430,41 @@ argument, empty arguments, and out-of-range values: exit 2, empty stdout,
 `count=0 sum=0 min=none max=none`. Arithmetic failure exits 1 with `error:`.
 Validate all input before printing.
 
+Create the crate once from the course root.
+
+**Windows PowerShell**
+
 ```powershell
 cargo new --vcs none .\rust\week02-stats
+```
+
+**macOS Terminal**
+
+```sh
+cargo new --vcs none ./rust/week02-stats
+```
+
+After implementing, run from the course root.
+
+**Windows PowerShell**
+
+```powershell
 Push-Location .\rust\week02-stats
 cargo run -- 4 0 9 4
 cargo test
 cargo fmt --check
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/week02-stats &&
+  cargo run -- 4 0 9 4 &&
+  cargo test &&
+  cargo fmt --check
+)
 ```
 
 **Small ch9 previews:** Option models absent extrema/checked_add; numeric parse
@@ -386,12 +505,16 @@ Do not combine Copy and Drop.
 
 **Required Intermediate:** create only a library this week:
 
+**Windows PowerShell**
+
 ```powershell
 cargo new --lib --vcs none .\rust\logscope
-Push-Location .\rust\logscope
-cargo test
-cargo fmt --check
-Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+cargo new --lib --vcs none ./rust/logscope
 ```
 
 Define Level (Info/Warn/Error), `Record<'a>` with a borrowed service &str and
@@ -401,6 +524,27 @@ u32 duration, and OwnedRecord with String service. Required APIs:
 `Record::into_owned(self) -> OwnedRecord`. Make fields/accessors testable.
 The inputs are already typed; no parser, validation, or Result API is due.
 Allocate the service String only when making the owned representation.
+
+After implementing, run from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\rust\logscope
+cargo test
+cargo fmt --check
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo test &&
+  cargo fmt --check
+)
+```
 
 **Gate/tests/deliverable:** submit library and week-03 reflection. Construct
 Info/api/10, Warn/api/20, Error/worker/100, and zero-duration records.
@@ -450,6 +594,8 @@ main as orchestration. Use at least one match and one appropriate `?`.
 Plain loops suffice; the closure/iterator refactor waits for week 5.
 Whole-file byte reads are acceptable. Handle stdout failures explicitly.
 
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\rust\logscope
 cargo run -- ..\..\fixtures\sample.log
@@ -459,10 +605,23 @@ cargo clippy --all-targets -- -D warnings
 Pop-Location
 ```
 
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo run -- ../../fixtures/sample.log &&
+  cargo test &&
+  cargo fmt --check &&
+  cargo clippy --all-targets -- -D warnings
+)
+```
+
 **Gate/tests/deliverable:** complete the shared matrix now, including invalid
 UTF-8 and overflow. Compare rendered bytes to all three expected files.
 Add tests/cli.rs using std::process::Command and Cargo's
-`env!("CARGO_BIN_EXE_logscope")`: test success, wrong count, missing file,
+`env!("CARGO_BIN_EXE_logscope")`, which includes the correct OS executable
+suffix. Construct fixture paths with Path::join; test success, wrong count, missing file,
 and a unique temporary path with spaces, cleaned up afterward.
 Submit code and week-04 reflection. Fixtures, public integration tests,
 and fatal error behavior must pass before refactoring; freeze the contract
@@ -509,7 +668,8 @@ No partial report on read failure. Inspect the original I/O error without
 platform-specific wording assertions. Keep every earlier regression test.
 Submit updated crate and week-05 reflection with a before/after call graph.
 Run fmt, test, and clippy inside rust/logscope, then
-`cargo run -- ..\..\fixtures\malformed.log`.
+`cargo run -- ..\..\fixtures\malformed.log` in Windows PowerShell or
+`cargo run -- ../../fixtures/malformed.log` in macOS Terminal.
 Gate: File and Cursor both work, failures propagate, fixture bytes are unchanged.
 **Rubric:** Starter/conversions 20 + generic reader/iterator refactor 30 +
 regression/failure tests 30 + explanation/formatting 20 = 100.
@@ -568,17 +728,48 @@ and [maps](https://go.dev/tour/moretypes/19) (pages 19-22).
 **Budget:** reading 60m + setup 30m + implementation 105m +
 tests/aliasing lab 105m + reflection/checks 60m = 360m.
 
-Create source/tests before invoking run/test:
+Initialize the module once from the course root.
+
+**Windows PowerShell**
 
 ```powershell
 New-Item -ItemType Directory -Force .\go\stats
 Push-Location .\go\stats
 go mod init example.com/rust-go-course/stats
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p go/stats &&
+(cd go/stats && go mod init example.com/rust-go-course/stats)
+```
+
+Create main.go and tests for the assignment below before invoking run/test.
+Then run the checks from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\go\stats
 go run . 4 0 9 4
 go test ./...
 gofmt -l .
 go vet ./...
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd go/stats &&
+  go run . 4 0 9 4 &&
+  go test ./... &&
+  gofmt -l . &&
+  go vet ./...
+)
 ```
 
 Reimplement week 2's exact numeric grammar, output, and exit behavior using
@@ -616,11 +807,22 @@ Use explicit errors for file and analysis failures, and count malformed records
 according to the contract. Match deterministic output exactly. Reuse the same
 inputs and expected results, not the Rust implementation's source structure.
 
+Initialize the module once.
+
+**Windows PowerShell**
+
 ```powershell
 New-Item -ItemType Directory -Force .\go\logscope\cmd\logscope
 Push-Location .\go\logscope
 go mod init example.com/rust-go-course/logscope
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p go/logscope/cmd/logscope &&
+(cd go/logscope && go mod init example.com/rust-go-course/logscope)
 ```
 
 Library package logscope lives at the module root, main at
@@ -636,9 +838,11 @@ Keep os.Exit at outer main after work returns.
 **Acceptance/tests/deliverable:** complete the shared matrix, all fixture byte
 outputs, CRLF, zero bytes, missing final LF, invalid UTF-8, and reverse service
 insertion order; test near-overflow updates. Manually build/invoke the CLI
-to check exits; week 9 automates it. Submit module and week-08 reflection.
+to check exits using [these OS-specific commands](SETUP.md#executables-exit-status-and-fixtures);
+week 9 automates it. Submit module and week-08 reflection.
 Inside go/logscope run Go checks and
-`go run .\cmd\logscope ..\..\fixtures\sample.log`.
+`go run .\cmd\logscope ..\..\fixtures\sample.log` in Windows PowerShell or
+`go run ./cmd/logscope ../../fixtures/sample.log` in macOS Terminal.
 **Rubric:** grammar/aggregation 35 + CLI/render parity 30 +
 test coverage 25 + explanation/formatting 10 = 100.
 **Optional Challenge:** wrap an error with `%w` while preserving its identity.
@@ -672,6 +876,8 @@ Verify Close once per opened handle. Keep writer failure tests at your command
 boundary. Automate CLI tests with os/exec: build once into t.TempDir, fail
 on build failure, and test success, zero/multiple arguments, a missing file,
 and a temporary path with spaces. No shell or exact OS error-text assertion.
+Use filepath.Join for filesystem paths and add the executable's .exe suffix
+only when runtime.GOOS is windows; macOS uses an unsuffixed name.
 Submit module and week-09 reflection; run Go formatting/vet/tests.
 **Rubric:** reader/interface boundary 25 + resource/error policy 25 +
 table/process tests 35 + reflection/formatting 15 = 100.
@@ -718,7 +924,9 @@ equivalence/lifecycle tests 25 + reflection/race evidence 15 = 100.
 **Optional Challenge:** measure overhead without a speed requirement.
 
 Run race tests on a supported toolchain. On Windows they require a compatible
-C compiler in addition to Go; ordinary tests passing is not a race-clean result.
+C compiler in addition to Go. See the
+[Windows/macOS race prerequisites](SETUP.md#race-detector-prerequisites).
+Ordinary tests passing is not a race-clean result.
 
 **Reflect:** Who closes each channel, and what proves every worker has stopped?
 
@@ -755,15 +963,35 @@ headers, empty bodies, and exact sample/empty report bytes. Run concurrent
 handler tests without mutations, normal/race checks, and record manual startup
 and shutdown. Submit module and week-11 reflection.
 
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\go\logscope
+New-Item -ItemType Directory -Force .\bin
 go build -o .\bin\logserve.exe .\cmd\logserve
+if ($LASTEXITCODE -ne 0) { Pop-Location; throw 'Build failed.' }
 .\bin\logserve.exe ..\..\fixtures\sample.log
+$LASTEXITCODE
 Pop-Location
 ```
 
-It blocks: in another terminal use
-`curl.exe -i http://127.0.0.1:8080/summary`, then Ctrl+C in the first.
+**macOS Terminal**
+
+```sh
+(
+  cd go/logscope &&
+  mkdir -p bin &&
+  go build -o bin/logserve ./cmd/logserve || exit
+  ./bin/logserve ../../fixtures/sample.log
+  printf 'exit=%s\n' "$?"
+)
+```
+
+It blocks. In another terminal, from any directory, use
+`curl.exe -i http://127.0.0.1:8080/summary` on Windows or
+`curl -i http://127.0.0.1:8080/summary` on macOS. Then press Ctrl+C in the first
+terminal; its next command displays the server's exit status, expected 0
+on successful shutdown.
 If the port is occupied, do not kill unrelated processes; retry when free.
 Tests must not need that port.
 **Rubric:** endpoint contract 30 + startup/shutdown/resource handling 25 +
@@ -786,9 +1014,12 @@ only against each other. Cover empty input, malformed input, CRLF, missing
 files, and paths with spaces. Rerun checks in every project.
 
 Place parity_test.go in go/logscope. Use os/exec argument arrays with a generous
-context timeout; build Rust via cargo using manifest
-`..\..\rust\logscope\Cargo.toml` and Go into t.TempDir. Document the assumption
-of Cargo's default debug target directory; account for executable suffixes.
+context timeout; build Rust via cargo using the module-relative manifest path
+`filepath.Join("..", "..", "rust", "logscope", "Cargo.toml")` and Go into
+t.TempDir. Use filepath.Join for fixture and binary paths too, not literal
+Windows separators. Document the assumption of Cargo's default debug target
+directory. Both binaries are named logscope.exe when runtime.GOOS is windows,
+otherwise logscope.
 Build failures fail tests. Capture bytes/status, not normalized shell text.
 Check all fixture expectations plus no/two arguments, missing file, path
 with spaces, a temporary CRLF input, and invalid bytes with manually calculated
@@ -817,18 +1048,18 @@ comparison with concrete examples 30 + clean navigable portfolio 10 = 100.
 
 ## Checks before submitting
 
-Inside each Rust crate:
+Inside each Rust crate, in either Windows PowerShell or macOS Terminal:
 
-```powershell
+```text
 cargo fmt --check
 cargo test
 cargo clippy --all-targets -- -D warnings
 ```
 
 Install the `rustfmt` and `clippy` components through `rustup` if missing.
-Inside each Go module:
+Inside each Go module, in either shell:
 
-```powershell
+```text
 gofmt -l .
 go vet ./...
 go test ./...

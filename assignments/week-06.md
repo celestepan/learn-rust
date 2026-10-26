@@ -55,12 +55,27 @@ Unit-test checked summary merging near overflow, including overlapping
 service keys. Test your join/reduction helper using test-only workers that
 return Err or panic; verify no success summary escapes.
 
+From the course root, run only your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\rust\logscope
 cargo test
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo test &&
+  cargo fmt --check &&
+  cargo clippy --all-targets -- -D warnings
+)
 ```
 
 Submit crate and `docs/submissions/week-06.md` with a diagram of ownership

@@ -17,13 +17,17 @@ small fixes 90m + final checks 60m + comparison/submission 90m = 360m.
 
 No new product. Preserve the two sequential CLIs, library parallel extensions,
 and Go HTTP command. Add `parity_test.go` at the root of `go/logscope`.
-Build the Rust CLI via cargo with the relative manifest
-`..\..\rust\logscope\Cargo.toml`; build the Go CLI into t.TempDir.
-Use os/exec argument arrays and capture output bytes, never PowerShell
+Build the Rust CLI via cargo with the manifest path constructed as
+`filepath.Join("..", "..", "rust", "logscope", "Cargo.toml")`, relative to the
+Go module. Build the Go CLI into t.TempDir using filepath.Join.
+Use os/exec argument arrays and capture output bytes, never shell
 redirection or string comparisons that normalize line endings.
 
 The harness may use Cargo's default debug binary under that crate's target
 directory; require default Cargo target settings and document this assumption.
+Construct that path with filepath.Join too. Select logscope.exe only when
+`runtime.GOOS == "windows"`, otherwise logscope, for both binaries. Do not put
+literal Windows path separators into process arguments used on macOS.
 Build failures fail the test. Use exec.CommandContext with a generous timeout
 to avoid a stuck child; report which command failed.
 
@@ -34,6 +38,10 @@ Fatal error wording may differ after `error:`. Add one temporary CRLF input
 and one invalid-byte input with manually calculated expectations.
 
 ## Final checks
+
+From the course root, run only your OS's block.
+
+**Windows PowerShell**
 
 ```powershell
 Push-Location .\rust\logscope
@@ -47,6 +55,24 @@ go vet ./...
 go test ./...
 go test -race ./...
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo fmt --check &&
+  cargo test &&
+  cargo clippy --all-targets -- -D warnings
+) &&
+(
+  cd go/logscope &&
+  gofmt -l . &&
+  go vet ./... &&
+  go test ./... &&
+  go test -race ./...
+)
 ```
 
 Also rerun checks in the independent week01-hello, week02-stats, and Go stats

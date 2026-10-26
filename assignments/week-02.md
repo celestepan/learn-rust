@@ -29,13 +29,18 @@ not a second CLI.
 
 ## Required Intermediate project
 
+Create the crate once from the course root, using only your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 cargo new --vcs none .\rust\week02-stats
-Push-Location .\rust\week02-stats
-cargo run -- 4 0 9 4
-cargo test
-cargo fmt --check
-Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+cargo new --vcs none ./rust/week02-stats
 ```
 
 Implement a pure function taking `&[u32]` and returning a Stats struct with
@@ -64,6 +69,29 @@ No arguments prints `count=0 sum=0 min=none max=none`. Report internal
 arithmetic failure with exit 1 and `error:` rather than panic.
 
 ## Gate, tests, and deliverables
+
+After implementing, run from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\rust\week02-stats
+cargo run -- 4 0 9 4
+cargo test
+cargo fmt --check
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/week02-stats &&
+  cargo run -- 4 0 9 4 &&
+  cargo test &&
+  cargo fmt --check
+)
+```
 
 Test empty, singleton, duplicates, zero, ascending/descending inputs, and
 `u32::MAX` in the pure function. Test rejected `-1`, `1001`, `1.0`, `""`,

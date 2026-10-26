@@ -13,15 +13,22 @@ implementation 105m + tests/aliasing lab 105m + reflection/checks 60m = 360m.
 
 ## Assignment
 
+From the course root, initialize the module once using your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 New-Item -ItemType Directory -Force .\go\stats
 Push-Location .\go\stats
 go mod init example.com/rust-go-course/stats
-go run . 4 0 9 4
-go test ./...
-gofmt -l .
-go vet ./...
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p go/stats &&
+(cd go/stats && go mod init example.com/rust-go-course/stats)
 ```
 
 Create main.go and tests before using run/test. Reimplement week 2's CLI
@@ -44,6 +51,31 @@ append with deliberately sufficient capacity, not an assumed growth policy.
 Do not commit a test that intentionally panics on nil-map assignment.
 
 The sample output must remain `count=4 sum=17 min=0 max=9` plus LF.
+After implementing source and tests, run from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\go\stats
+go run . 4 0 9 4
+go test ./...
+gofmt -l .
+go vet ./...
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd go/stats &&
+  go run . 4 0 9 4 &&
+  go test ./... &&
+  gofmt -l . &&
+  go vet ./...
+)
+```
+
 Formatting check lists no files; all tests and vet pass.
 Submit module and `docs/submissions/week-07.md`.
 **Rubric:** stats/CLI parity 35 + aliasing lab 25 + edge-case tests 25 +

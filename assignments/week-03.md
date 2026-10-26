@@ -32,14 +32,19 @@ Copy and Drop on that type.
 
 ## Required Intermediate project
 
-Create the crate once; weeks 4-6 extend it:
+Create the crate once from the course root; weeks 4-6 extend it.
+Choose only your OS's block.
+
+**Windows PowerShell**
 
 ```powershell
 cargo new --lib --vcs none .\rust\logscope
-Push-Location .\rust\logscope
-cargo test
-cargo fmt --check
-Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+cargo new --lib --vcs none ./rust/logscope
 ```
 
 In `src/lib.rs`, define Level with Info, Warn, Error variants, a
@@ -53,6 +58,27 @@ tests. These accept already-typed data: no validation or parsing is due.
 Convert service storage exactly when producing OwnedRecord, not when borrowing.
 
 ## Gate, tests, and deliverables
+
+After implementing, run from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\rust\logscope
+cargo test
+cargo fmt --check
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo test &&
+  cargo fmt --check
+)
+```
 
 Construct Info/api/10, Warn/api/20, and Error/worker/100 records in memory.
 Verify fields, all levels, and zero duration. Compare the service pointer with

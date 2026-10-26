@@ -57,6 +57,10 @@ Do not use filter_map to discard malformed lines without incrementing invalid.
 
 ## Gate, checks, and acceptance
 
+From the course root, run only your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\rust\logscope
 cargo test
@@ -64,6 +68,18 @@ cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 cargo run -- ..\..\fixtures\malformed.log
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd rust/logscope &&
+  cargo test &&
+  cargo fmt --check &&
+  cargo clippy --all-targets -- -D warnings &&
+  cargo run -- ../../fixtures/malformed.log
+)
 ```
 
 Keep the existing parser, fixture, overflow, and CLI tests. Add tests for

@@ -44,6 +44,11 @@ then verify every worker signals exit before the function returns.
 Use the same seam to inject a worker error. A generous test timeout is a
 deadlock guard, not a sleep-based synchronization mechanism.
 
+Check the [platform-specific race prerequisites](../SETUP.md#race-detector-prerequisites).
+From the course root, run only your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\go\logscope
 go test ./...
@@ -51,6 +56,18 @@ go test -race ./...
 gofmt -l .
 go vet ./...
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd go/logscope &&
+  go test ./... &&
+  go test -race ./... &&
+  gofmt -l . &&
+  go vet ./...
+)
 ```
 
 Submit module and `docs/submissions/week-10.md`.

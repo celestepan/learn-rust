@@ -14,11 +14,22 @@ tests 90m + reflection/checks 45m = 360m.
 
 ## Assignment
 
+Initialize once from the course root, using only your OS's block.
+
+**Windows PowerShell**
+
 ```powershell
 New-Item -ItemType Directory -Force .\go\logscope\cmd\logscope
 Push-Location .\go\logscope
 go mod init example.com/rust-go-course/logscope
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+mkdir -p go/logscope/cmd/logscope &&
+(cd go/logscope && go mod init example.com/rust-go-course/logscope)
 ```
 
 Use package logscope at the module root, and package main in
@@ -40,6 +51,10 @@ boundary. Do not use bufio.Scanner's default token limit without accounting
 for it; simply splitting bytes avoids a hidden long-line truncation policy.
 No Unicode Fields or TrimSpace.
 
+After implementing, run from the course root.
+
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\go\logscope
 go run .\cmd\logscope ..\..\fixtures\sample.log
@@ -49,12 +64,26 @@ go vet ./...
 Pop-Location
 ```
 
+**macOS Terminal**
+
+```sh
+(
+  cd go/logscope &&
+  go run ./cmd/logscope ../../fixtures/sample.log &&
+  go test ./... &&
+  gofmt -l . &&
+  go vet ./...
+)
+```
+
 ## Acceptance and submission
 
 Test all record grammar cases and all three fixture byte outputs. Add byte
 inputs for CRLF, zero bytes, missing final LF, invalid UTF-8, and reversed
 service insertion order. Unit-test a near-overflow update helper.
-Manually build and invoke the CLI to check exits; week 9 automates this.
+Manually build and invoke the CLI to check exits using the
+[Windows/macOS commands](../SETUP.md#executables-exit-status-and-fixtures);
+week 9 automates this. Do not use go run to assert the program's own exit code.
 Keep os.Exit at the outer main boundary, after work returns.
 
 Submit module and `docs/submissions/week-08.md`.

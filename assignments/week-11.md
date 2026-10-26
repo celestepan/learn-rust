@@ -44,19 +44,76 @@ Successful shutdown exits 0. No TLS, persistence, or deployment work.
 Test all endpoint cases with httptest, including exact header/body and empty
 input report. Concurrent handler tests must not mutate captured data.
 
+From the course root, run only your OS's block. Resolve any unavailable
+[race-tool prerequisites](../SETUP.md#race-detector-prerequisites) or record
+that check as incomplete.
+
+**Windows PowerShell**
+
 ```powershell
 Push-Location .\go\logscope
 go test ./...
 go test -race ./...
 gofmt -l .
 go vet ./...
-go build -o .\bin\logserve.exe .\cmd\logserve
-.\bin\logserve.exe ..\..\fixtures\sample.log
 Pop-Location
 ```
 
-The server blocks: in a second terminal run
-`curl.exe -i http://127.0.0.1:8080/summary`, then Ctrl+C in the first.
+**macOS Terminal**
+
+```sh
+(
+  cd go/logscope &&
+  go test ./... &&
+  go test -race ./... &&
+  gofmt -l . &&
+  go vet ./...
+)
+```
+
+Then build and run the server from the course root.
+
+**Windows PowerShell**
+
+```powershell
+Push-Location .\go\logscope
+New-Item -ItemType Directory -Force .\bin
+go build -o .\bin\logserve.exe .\cmd\logserve
+if ($LASTEXITCODE -ne 0) { Pop-Location; throw 'Build failed.' }
+.\bin\logserve.exe ..\..\fixtures\sample.log
+$LASTEXITCODE
+Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd go/logscope &&
+  mkdir -p bin &&
+  go build -o bin/logserve ./cmd/logserve || exit
+  ./bin/logserve ../../fixtures/sample.log
+  printf 'exit=%s\n' "$?"
+)
+```
+
+The server blocks. In a second terminal, from any directory, use your OS's
+request command:
+
+**Windows PowerShell**
+
+```powershell
+curl.exe -i http://127.0.0.1:8080/summary
+```
+
+**macOS Terminal**
+
+```sh
+curl -i http://127.0.0.1:8080/summary
+```
+
+Press Ctrl+C in the first terminal. Its next command displays the server's
+exit status, which must be 0 on successful shutdown.
 If port 8080 is occupied, do not kill unrelated processes; record the conflict
 and retry when free. Tests must not depend on that fixed port.
 

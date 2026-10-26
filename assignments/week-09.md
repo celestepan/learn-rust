@@ -38,6 +38,13 @@ that executable for success, zero/multiple arguments, a nonexistent file,
 and a temporary path with spaces. Compare captured bytes, stderr prefix, and
 exit status. Fail the test if the binary build fails. Do not assert exact
 platform-specific OS messages or run through a shell.
+Construct filesystem paths with filepath.Join. Name the executable logscope.exe
+only on Windows (`runtime.GOOS == "windows"`), otherwise logscope, so the same
+process tests work on macOS.
+
+From the course root, run only your OS's block.
+
+**Windows PowerShell**
 
 ```powershell
 Push-Location .\go\logscope
@@ -45,6 +52,17 @@ go test ./...
 gofmt -l .
 go vet ./...
 Pop-Location
+```
+
+**macOS Terminal**
+
+```sh
+(
+  cd go/logscope &&
+  go test ./... &&
+  gofmt -l . &&
+  go vet ./...
+)
 ```
 
 Submit module and `docs/submissions/week-09.md`.
