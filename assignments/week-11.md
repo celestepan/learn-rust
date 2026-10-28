@@ -13,8 +13,14 @@ implementation 135m + tests 105m + reflection/checks 45m = 360m.
 
 ## Assignment
 
-Add `go/logscope/cmd/logserve/main.go` and a testable handler constructor in
-the library. It accepts an immutable rendered report. Do not parse request
+Complete G11.1-G11.4 in the supplied
+[Go logscope exercise spec](../docs/exercises/go-logscope.md). The separate
+`cmd/logserve/main.go` signal/process adapter and active tests are included;
+the handler, server configuration, startup, and shutdown remain learner TODOs.
+No new module is needed. Follow the spec's dependency seams and ordered tests.
+
+Implement the testable handler constructor in the library.
+It accepts an immutable rendered report. Do not parse request
 uploads or share mutable summary maps between requests.
 
 `logserve` accepts exactly one file path. Wrong argument count exits 2;
@@ -43,6 +49,10 @@ Successful shutdown exits 0. No TLS, persistence, or deployment work.
 
 Test all endpoint cases with httptest, including exact header/body and empty
 input report. Concurrent handler tests must not mutate captured data.
+The supplied tests also exercise startup failures and real ephemeral-loopback
+server cancellation, graceful completion, and forced-close fallback. Run and
+inspect them, then extend the cases; tests never occupy port 8080 or leave a
+server running. Shutdown failure remains an error even after fallback Close.
 
 From the course root, run only your OS's block. Resolve any unavailable
 [race-tool prerequisites](../SETUP.md#race-detector-prerequisites) or record
@@ -124,4 +134,5 @@ handler tests 30 + reflection/formatting 15 = 100.
 **C++ questions:** (1) Why is immutable captured text safe to share here?
 (2) Which resource lifetimes are explicit rather than garbage-collected?
 
-**Optional stretch (ungraded):** a test server on an ephemeral loopback port.
+**Optional stretch (ungraded):** extend the supplied ephemeral-loopback tests
+with additional concurrent-client cases.

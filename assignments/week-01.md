@@ -25,30 +25,19 @@ project's build and test runner; it is not a request to recreate CMake.
 
 ## Required Starter
 
-In the greeting crate's tests, write a small function using an if expression
-that classifies a u32 as zero or nonzero. Assert results for 0 and 7.
+In the supplied greeting crate, implement the H1 classifier using an if
+expression; its tests assert zero/nonzero results for 0 and 7.
 Predict a mutability error, compile to observe it, then fix it. Record the
 difference between changing a mutable binding and shadowing one.
 
 ## Required Intermediate project
 
-From the course root, create the crate once using your OS's block.
+Use the supplied `rust/week01-hello` crate; do not run `cargo new` over it.
+Follow the [file map and ordered H1-H3 TODOs](../docs/exercises/rust-hello.md).
+Build and test compilation must pass before implementation; active acceptance
+tests intentionally fail until the learner functions and experiment are done.
 
-**Windows PowerShell**
-
-```powershell
-New-Item -ItemType Directory -Force .\rust
-cargo new --vcs none .\rust\week01-hello
-```
-
-**macOS Terminal**
-
-```sh
-mkdir -p rust &&
-cargo new --vcs none ./rust/week01-hello
-```
-
-Replace the generated hello-world program. Required behavior: with no argument,
+Required behavior: with no argument,
 print `Hello, learner!` plus LF; with one nonempty name argument, print
 `Hello, NAME!` plus LF. Preserve the supplied name, including spaces; do not
 trim it. Reject an empty name or more than one argument with exit 2, empty
@@ -57,8 +46,8 @@ Names can be ordinary Unicode text; this is not the later ASCII log grammar.
 
 Factor greeting construction into a function and test it. Required cases:
 default greeting, `Ada`, `"Ada Lovelace"`, and empty-name rejection.
-Do not use panic for input validation. You choose function names and error
-representation this week.
+Do not use panic for input validation. Function signatures, a small error
+type, and executable wiring are supplied; implement the greeting body.
 
 After implementing, run the checks from the course root.
 

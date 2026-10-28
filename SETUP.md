@@ -20,8 +20,11 @@ ordinary course commands should run as your normal user.
 You need internet access for these downloads and online readings. Rust's local
 reference documentation is available through `rustup doc` after installation.
 The graded exercises use only the standard libraries: there is no package
-bundle, completed project, framework, or Microsoft RustTraining checkout to
-download. A GitHub account is needed to own a fork and push, not to read or
+bundle, completed solution, framework, or Microsoft RustTraining checkout to
+download. All required projects are included as buildable scaffolds with learner
+TODOs and active acceptance tests. See the
+[project guide index](README.md#project-specs-and-implementation-guides).
+A GitHub account is needed to own a fork and push, not to read or
 download this public course. GitHub CLI, Homebrew, full IDEs, and editor
 extensions are optional, not prerequisites.
 
@@ -173,9 +176,10 @@ folder to your chosen Projects directory and open the folder containing
 README.md, not the ZIP or an extra wrapper folder. ZIP contents have no Git
 history or remotes. Prefer a clone if you want to commit and push later.
 
-Read [week 1](assignments/week-01.md) next. The downloaded projects are
-assignment specifications and fixtures; you create the actual source projects
-as each assignment directs.
+Read [week 1](assignments/week-01.md) and its
+[greeting spec](docs/exercises/rust-hello.md) next. The download includes actual
+source scaffolds, tests, assignment specifications, and fixtures. Implement
+the learner TODOs; do not recreate or overwrite these projects.
 
 ## Shell conventions and directory plan
 
@@ -185,8 +189,8 @@ Push-Location/Pop-Location; macOS blocks use a subshell `(cd ... && ...)` so
 your parent shell stays at the course root. Do not paste PowerShell paths or
 commands into zsh. Portable Cargo/Go commands are marked as shared.
 
-Read each block before running it. Run creation commands once, implement the
-assignment, then run its build/test commands. Stop at a failing command and
+Read each block before running it. Open the supplied project, implement the
+assignment, then run its focused build/test commands. Stop at a failing command and
 record the error; the last successful command is not proof that earlier
 commands passed. Do not run course builds with sudo or as administrator.
 
@@ -198,19 +202,27 @@ learn-rust/
   rust/
     week01-hello/      independent Cargo binary crate
     week02-stats/      independent Cargo binary crate
-    logscope/          typed-record library week 3; CLI added week 4
+    logscope/          staged library/CLI/worker TODOs, weeks 3-6
   go/
     stats/             independent Go module, week 7
     logscope/          Go module, weeks 8-12
       cmd/logscope/    sequential CLI
-      cmd/logserve/    HTTP command added in week 11
+      cmd/logserve/    supplied HTTP command, TODOs due week 11
 ```
 
 There is no root Cargo workspace or Go module. Each Rust project owns its
 Cargo.toml/Cargo.lock; each Go project owns its go.mod. Keep Cargo.lock for
 these application exercises. Without external Go packages, go.sum may not
-exist; that is normal. Do not rerun cargo new in logscope in week 4: extend
-week 3's library. Do not set GOROOT/GOPATH or put the course inside a toolchain.
+exist; that is normal. Do not run cargo new or go mod init over any supplied
+project. Do not set GOROOT/GOPATH or put the course inside a toolchain.
+
+Use the [project specs](README.md#project-specs-and-implementation-guides) for
+build-only, test-compilation, and per-week acceptance commands. Compilation
+should pass before implementation; acceptance failures from explicit TODO
+stubs are expected until you complete them. The logscope projects evolve
+across several weeks: use focused selectors until the final stage.
+The capstone harness has an explicit `parity` build tag and requires both
+toolchains; ordinary earlier Go tests do not require Rust.
 
 Microsoft's [getting-started chapter](https://microsoft.github.io/RustTraining/c-cpp-book/ch02-getting-started.html)
 supplies the main/Cargo explanation. Its optional REPL, external crates,
@@ -230,8 +242,9 @@ New-Item -ItemType Directory -Force .\docs\submissions
 mkdir -p docs/submissions
 ```
 
-After an assignment's module exists, run its checks. From inside a Rust crate,
-these commands work in both shells:
+During a staged assignment, use its spec's focused acceptance selectors.
+After all stages in a crate/module are due, run the full checks below.
+From inside a Rust crate, these commands work in both shells:
 
 ```text
 cargo fmt --check
@@ -246,6 +259,11 @@ gofmt -l .
 go vet ./...
 go test ./...
 ```
+
+For the week 12 cross-language gate, also run
+`go test -tags parity -count=1 -run '^TestParity$' .` inside `go/logscope`.
+See the [capstone spec](docs/exercises/parity.md) for compile-only commands
+and the additional toolchain requirement.
 
 `gofmt -l .` lists unformatted files but does not fail for formatting
 differences; the acceptance criterion is an empty listing. Use `gofmt -w .`
